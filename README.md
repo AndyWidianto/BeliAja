@@ -14,12 +14,12 @@ Saat ini fitur yang sudah selesai adalah Register dan Login dengan autentikasi t
 
 ### ✅ Fitur yang Sudah Selesai
 
-✅ Register User
-✅ Login User
-✅ Validasi input
-✅ Error handling (email duplikat, kredensial salah)
-✅ Menyimpan token (SharedPreferences)
-✅ Integrasi Flutter ↔ Express
+- ✅ Register User
+- ✅ Login User
+- ✅ Validasi input
+- ✅ Error handling (email duplikat, kredensial salah)
+- ✅ Menyimpan token (SharedPreferences)
+- ✅ Integrasi Flutter ↔ Express
 
 ## 🛠️ Teknologi yang Digunakan
 ### 📌 Frontend (Flutter)
@@ -93,12 +93,12 @@ flutter run
 
 ## ✅ Status Saat Ini
 
-✔ Register selesai
-✔ Login selesai
-✔ Error handling selesai
-❌ Belum ada fitur produk
-❌ Belum ada UI dashboard ecommerce
-✅ Sudah siap dikembangkan lebih lanjut
+- ✔ Register selesai
+- ✔ Login selesai
+- ✔ Error handling selesai
+- ❌ Belum ada fitur produk
+- ❌ Belum ada UI dashboard ecommerce
+- ✅ Sudah siap dikembangkan lebih lanjut
 
 ## 🚀 Next Feature (Opsional)
 
