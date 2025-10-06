@@ -19,4 +19,23 @@ const createRefreshToken = (data) => {
     });
 }
 
-module.exports = { createAccessToken, createRefreshToken };
+const authentication = async (req, resizeBy, next) => {
+    const auth = req.headers.authorization;
+    if (!auth) {
+        return resizeBy.status(401).json({
+            message: "authorization"
+        });
+    }
+    try {
+        const token = auth.split(" ")[1];
+        const verifyToken = jwt.verify(token, secret);
+        req.user = verifyToken;
+        next();
+    } catch (err) {
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+}
+
+module.exports = { createAccessToken, createRefreshToken, authentication };
