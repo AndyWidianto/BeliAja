@@ -2,6 +2,7 @@ import 'package:BeliAja/presentation/providers/register_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import './presentation/providers/login_provider.dart';
+import 'package:BeliAja/presentation/providers/search_product_provider.dart';
 import './router/app_router.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +12,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => RegisterProvider())
+        ChangeNotifierProvider(create: (_) => RegisterProvider()),
+        ChangeNotifierProvider(create: (_) => SearchProductProvider())
       ],
       child: MyApp(),
     )

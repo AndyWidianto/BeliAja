@@ -6,22 +6,26 @@ class LoginProvider extends ChangeNotifier {
   final AuthService authService = AuthService();
   String _username = "";
   String _password = "";
+  bool _error = false;
   bool _loading = false;
   
   bool get loading => _loading;
+  bool get error => _error;
 
   login() async {
     notifyListeners();
     setLoading(true);
+    setError(false);
     try {
       final res = await authService.login(_username, _password);
-      print(res);
+      print("ini response login: $res");
       saveLoginState(res["token"]);
       setPassword("");
       setUsername("");
       return true;
     }
     catch (err) {
+      setError(true);
       return false;
     } finally {
       setLoading(false);
@@ -46,6 +50,11 @@ class LoginProvider extends ChangeNotifier {
 
   setLoading(bool value) {
     _loading = value;
+    notifyListeners();
+  }
+
+  setError(bool value) {
+    _error = value;
     notifyListeners();
   }
 }

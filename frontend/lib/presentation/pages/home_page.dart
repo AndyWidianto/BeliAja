@@ -1,59 +1,81 @@
+import "package:BeliAja/presentation/navigation/home_navigasi.dart";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
+import "package:BeliAja/presentation/providers/search_product_provider.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-  @override 
+  @override
   State<HomePage> createState() => _HomePage();
 }
 
 class _HomePage extends State<HomePage> {
 
-  Future<void> logout() async {
-    final shared = await SharedPreferences.getInstance();
-    shared.setBool("isLoggedIn", false);
+  final List<dynamic> Categoires = [
+    {"id": 1,"icon": Icons.phone_android },
+    {"id": 1,"icon": Icons.computer },
+    {"id": 1,"icon": Icons.headphones },
+    {"id": 1,"icon": Icons.checkroom },
+    {"id": 1,"icon": Icons.watch },
+    {"id": 1,"icon": Icons.kitchen },
+    {"id": 1,"icon": Icons.cleaning_services },
+    {"id": 1,"icon": Icons.bed },
+    {"id": 1,"icon": Icons.sports_basketball },
+    {"id": 1,"icon": Icons.music_note }
+  ];
 
-    if (!mounted) return;
-    context.go("/login");
-  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Home Page")),
-      body: Container(
-        padding: EdgeInsets.all(5),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 150,
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text("hello world"),
+    return Container(
+      height: double.infinity,
+      padding: EdgeInsets.all(5),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(10),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    TextButton(onPressed: () {}, child: Text("G")),
-                    SizedBox(width: 10),
-                    TextButton(onPressed: () {}, child: Text("G")),
-                  ],
+              child: Text("hello world"),
+            ),
+            SizedBox(height: 5),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List.generate(
+                  Categoires.length,
+                  (i) => IconButton(
+                    onPressed: () => {},
+                    icon: Icon(Categoires[i]["icon"], size: 30),
+                  ),
                 ),
               ),
-              Column(
-                children: [
-                  Container(
+            ),
+            SizedBox(height: 5),
+            Column(
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.all(0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => {},
+                  child: Container(
                     padding: EdgeInsets.all(0.8),
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.lightBlue,
+                      color: const Color.fromARGB(0, 223, 223, 223),
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey, width: 0.6),
                     ),
                     child: Row(
                       children: [
@@ -75,102 +97,51 @@ class _HomePage extends State<HomePage> {
                         ),
                         SizedBox(width: 5),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                "Hanphone Iphone Pro Max 16",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                          child: Container(
+                            height: 100,
+                            padding: EdgeInsets.all(0.8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Hanphone Iphone Pro Max 16",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                "blue | black | gray",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.normal,
+                                Text(
+                                  "blue | black | gray",
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.normal,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                "Rp. 100.000",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                Expanded(
+                                  child: Container(color: Colors.transparent),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  "Rp. 100.000",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  TextButton(
-                    onPressed: logout,
-                    child: Text("Logout"),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(0.8),
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text("Container"),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(0.8),
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text("Container"),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(0.8),
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text("Container"),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(0.8),
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text("Container"),
-                  ),
-                  SizedBox(height: 10),
-                  Container(
-                    padding: EdgeInsets.all(0.8),
-                    width: double.infinity,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.blueGrey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text("Container"),
-                  ),
-                  SizedBox(height: 10),
-                ],
-              ),
-            ],
-          ),
+                ),
+                SizedBox(height: 10),
+                SizedBox(height: 60),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -1,7 +1,5 @@
-import "package:BeliAja/presentation/providers/users_provider.dart";
 import "package:flutter/material.dart";
 import "package:BeliAja/presentation/providers/login_provider.dart";
-import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 
@@ -55,14 +53,9 @@ class LoginPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
+                          IconButton(
                             onPressed: () => context.go("/home"),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              padding: EdgeInsets.all(5),
-                              minimumSize: Size(45, 45),
-                            ),
-                            child: ClipRRect(
+                            icon: ClipRRect(
                               borderRadius: BorderRadiusGeometry.circular(50),
                               child: Image.asset(
                                 "assets/images/facebook.png",
@@ -154,6 +147,9 @@ class _FormLogin extends State<FormLogin> {
     final success = await context.read<LoginProvider>().login();
     if (!mounted) return;
     if (!success) {
+      if (!_formKey.currentState!.validate()) {
+        print("Password atau email ada yang salah nih");
+      }
       return print("gagal login");
     }
     context.go("/home");
@@ -167,6 +163,7 @@ class _FormLogin extends State<FormLogin> {
   @override
   Widget build(BuildContext context) {
     final contentRead = context.read<LoginProvider>();
+    final content = context.watch<LoginProvider>();
     return Form(
       key: _formKey,
       child: Column(
@@ -186,6 +183,9 @@ class _FormLogin extends State<FormLogin> {
             onChanged: (value) => contentRead.setUsername(value),
             validator: (value) {
               if (value == null || value.isEmpty) return 'Email wajib diisi';
+              if (content.error) {
+                return "Email atau password salah";
+              }
               return null;
             },
           ),

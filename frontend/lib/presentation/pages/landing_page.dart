@@ -11,10 +11,24 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPage extends State<LandingPage> {
 
+  Future<void> isLoggin() async {
+    try {
+      final shared = await SharedPreferences.getInstance();
+      final token = shared.getString("token");
+      print(token);
+      if (!mounted) return;
+      if (token != null && token.isNotEmpty) {
+        return context.go("/home");
+      }
+    } catch (err) {
+      print(err);
+    }
+  }
 
   @override 
   void initState() {
     super.initState();
+    isLoggin();
   }
   @override
   Widget build(BuildContext context) {

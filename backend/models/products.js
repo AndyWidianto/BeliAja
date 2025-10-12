@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   products.init({
-    id: DataTypes.UUID,
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     price: DataTypes.DECIMAL,
