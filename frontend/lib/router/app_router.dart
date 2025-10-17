@@ -1,12 +1,16 @@
 import 'package:BeliAja/presentation/pages/bag_page.dart';
 import 'package:BeliAja/presentation/pages/cart_page.dart';
+import 'package:BeliAja/presentation/pages/create_addres_page.dart';
 import 'package:BeliAja/presentation/pages/detail_product_page.dart';
 import 'package:BeliAja/presentation/pages/home_page.dart';
 import 'package:BeliAja/presentation/pages/landing_page.dart';
+import 'package:BeliAja/presentation/pages/list_payment_page.dart';
 import 'package:BeliAja/presentation/pages/login_page.dart';
+import 'package:BeliAja/presentation/pages/payment_confirmation_page.dart';
 import 'package:BeliAja/presentation/pages/percobaan.dart';
 import 'package:BeliAja/presentation/pages/profile_page.dart';
 import 'package:BeliAja/presentation/pages/register_page.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:BeliAja/presentation/navigation/home_navigasi.dart';
 import 'package:BeliAja/presentation/pages/search_product_page.dart';
@@ -37,11 +41,33 @@ final appRouter = GoRouter(
           builder: (context, state) => SearchProductPage(),
         ),
         GoRoute(
-          path: '/detail',
+          path: '/detail-product/:id',
           builder: (context, state) => DetailProductPage(),
         ),
       ],
     ),
+    ShellRoute(
+      redirect: (context, state) async {
+        final sharedPrefs = await SharedPreferences.getInstance();
+        final token = sharedPrefs.getString("token");
+
+        if (token == null || token.isEmpty) {
+          return "/login";
+        }
+        return null;
+      },
+      builder: (context, state, child) {
+        return Scaffold(
+          body: child,
+        );
+      },
+      routes: [
+        GoRoute(path: '/payment-confirmation', builder: (context, state) => PaymentConfirmationPage()),
+        GoRoute(path: '/create-address', builder: (context, state) => CreateAddresPage()),
+        GoRoute(path: '/list-payment', builder: (context, state) => ListPaymentPage()),
+      ]
+    ),
+    GoRoute(path: '/payment-confirmation', builder: (context, state) => LandingPage()),
     GoRoute(path: '/', builder: (context, state) => LandingPage()),
     GoRoute(path: '/login', builder: (context, state) => LoginPage()),
     GoRoute(path: '/signin', builder: (context, state) => RegisterPage()),

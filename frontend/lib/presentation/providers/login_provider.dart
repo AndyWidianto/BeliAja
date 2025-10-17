@@ -17,9 +17,10 @@ class LoginProvider extends ChangeNotifier {
     setLoading(true);
     setError(false);
     try {
-      final res = await authService.login(_username, _password);
-      print("ini response login: $res");
-      saveLoginState(res["token"]);
+      // final res = await authService.login(_username, _password);
+      await Future.delayed(Duration(seconds: 3));
+      // print("ini response login: $res");
+      saveLoginState("hallosemaunya");
       setPassword("");
       setUsername("");
       return true;

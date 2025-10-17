@@ -1,6 +1,6 @@
-import "package:BeliAja/presentation/navigation/home_navigasi.dart";
 import "package:BeliAja/presentation/providers/search_product_provider.dart";
 import "package:flutter/material.dart";
+import "package:go_router/go_router.dart";
 import "package:provider/provider.dart";
 
 class SearchProductPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _SearchProductPage extends State<SearchProductPage> {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Container(
-        margin: EdgeInsets.only(left: 5, right: 5, top: 10),
+        padding: EdgeInsets.all(0),
         child: ListProducts(),
       ),
     );
@@ -41,49 +41,49 @@ class _ListProducts extends State<ListProducts> {
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 2,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 3,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 4,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 5,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 7,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 8,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
       "cost": "10.000",
     },
     {
-      "id": 1,
+      "id": 9,
       "image": "assets/images/go_shopping.png",
       "title": "Handpone Iphone Pro Max 16",
       "type": "blue | black | gray",
@@ -98,9 +98,10 @@ class _ListProducts extends State<ListProducts> {
         (i) => Column(
           children: [
             TextButton(
-              onPressed: () => {},
+              onPressed: () => context.go("/detail-product/${products[i]["id"]}"),
               style: TextButton.styleFrom(
                 backgroundColor: Colors.white,
+                foregroundColor: Colors.black,
                 minimumSize: Size(double.infinity, 100),
                 padding: EdgeInsets.only(right: 5),
                 shape: RoundedRectangleBorder(

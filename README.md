@@ -44,12 +44,18 @@ Saat ini fitur yang sudah selesai adalah Register dan Login dengan autentikasi t
 ### 📱 Flutter (Frontend)
 ``` 
 lib/
+ ├─ data/
+ │   ├─ models/
+ │   ├─ source/
+ │   │  ├─ local/
+ │   │  ├─ remote/
  ├─ presentation/
- │   ├─ screens/
+ │   ├─ navigation/
+ │   ├─ pages/
  │   ├─ providers/
  ├─ services/
  ├─ main.dart
-pubspec.yaml
+ ├─ pubspec.yaml
 ```
 
 ### 🖥️ Express (Backend)
@@ -60,8 +66,10 @@ backend/
  │   ├─ services/
  │   ├─ models/
  │   ├─ routes/
+ ├─ models/
  ├─ config/
  │   └─ config.js
+ ├─ routes/
  ├─ index.js
  ├─ package.json
 ```
