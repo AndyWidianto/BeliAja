@@ -15,12 +15,6 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      price: {
-        type: Sequelize.DECIMAL
-      },
-      sku: {
-        type: Sequelize.STRING
-      },
       category_id: {
         type: Sequelize.UUID,
         allowNull: true,
@@ -30,9 +24,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
         onUpdate: "SET NULL"
-      },
-      stock: {
-        type: Sequelize.INTEGER
       },
       image: {
         type: Sequelize.STRING

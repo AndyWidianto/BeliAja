@@ -1,5 +1,4 @@
-const { createAccessToken, createRefreshToken } = require("../middleware/middleware");
-const { register, login } = require("../services/authService");
+const { register, login, refreshToken } = require("../services/authService");
 
 
 const registerController = async (req, res, next) => {
@@ -7,16 +6,14 @@ const registerController = async (req, res, next) => {
 
     try {
         const user = await register(id, username, email, password, role);
-        const accessToken = createAccessToken(user);
-        const refreshToken = createRefreshToken(user);
-        res.cookie("refreshToken", refreshToken, {
+        res.cookie("refreshToken", user.refreshToken, {
             httpOnly: true,
             secure: false, 
             maxAge: 1000 * 60 * 60 * 24
         })
         res.json({
             message: "berhasil register",
-            token: accessToken
+            token: user.accessToken
         });
     } catch (err) {
         next(err);
@@ -24,24 +21,37 @@ const registerController = async (req, res, next) => {
 }
 
 const loginController = async (req, res, next) => {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
     try {
-        const user = await login(email, password);
-        const accessToken = createAccessToken(user);
-        const refreshToken = createRefreshToken(user);
-        res.cookie("refreshToken", refreshToken, {
+        const user = await login(username, password);
+        res.cookie("refreshToken", user.refreshToken, {
             httpOnly: true,
             secure: false, 
             maxAge: 1000 * 60 * 60 * 24
         })
         res.json({
             message: "berhasil login nih",
-            token: accessToken
+            token: user.accessToken
         });
     } catch (err) {
         next(err);
     }
 }
 
-module.exports = { registerController, loginController };
+const refreshTokenController = async (req, res, next) => {
+    const user = req.user;
+    const token = req.refreshToken;
+    try {
+        const newToken = await refreshToken(user, token);
+        res.json({
+            message: "Berhasil update token",
+            token: newToken
+        });
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+}
+
+module.exports = { registerController, loginController, refreshTokenController };

@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
+.bearer-modal {
+  background: rgba(0, 0, 0, 0.26);
+}
+.animate-in {
+  animation: animateIn 300ms ease-in;
+}
+
+@keyframes animateIn {
+  from {
+    transform: translateY(-100px);
+    opacity: 0.3;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-out {
+  animation: animateOut 300ms infinite ease-out;
+}
+
+@keyframes animateOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100px);
+    opacity: 0.3;
+  }
+}
+
+.animate-circle {
+  animation: animateCircle 500ms infinite linear;
+}
+
+@keyframes animateCircle {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(360deg);
+  }
+}

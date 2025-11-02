@@ -3,7 +3,8 @@ const AppError = require("../untils/customError");
 const models = require("../../models");
 
 const createCategory = async (user, { name, description }) => {
-    if (user.role !== "admin" || user.role !== "super_admin") {
+    console.log(user);
+    if (user.role !== "admin" && user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk membuat categori", 403);
     }
 
@@ -15,10 +16,10 @@ const createCategory = async (user, { name, description }) => {
 }
 
 const updateCategory = async (user, { id, name, description }) => {
-    if (user.role !== "admin" || user.role !== "super_admin") {
+    if (user.role !== "admin" && user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk membuat categori", 403);
     }
-    const findCategory = await models.categories.findByFk(id);
+    const findCategory = await models.categories.findByPk(id);
     if (!findCategory) {
         throw new AppError("categori tidak ditemukan", 404);
     }

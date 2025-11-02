@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { Sequelize } = require('.');
 module.exports = (sequelize, DataTypes) => {
   class categories extends Model {
     /**
@@ -18,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   categories.init({
+    id: {
+      allowNull: false,
+      primaryKey: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+    },
     name: DataTypes.STRING,
     description: DataTypes.TEXT
   }, {

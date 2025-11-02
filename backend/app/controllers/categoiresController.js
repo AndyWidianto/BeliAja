@@ -11,6 +11,7 @@ const createCategoryController = async (req, res, next) => {
             data: newCategory
         });
     } catch (err) {
+        console.error(err);
         next(err);
     }
 }

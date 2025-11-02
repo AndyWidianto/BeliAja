@@ -19,10 +19,11 @@ const createRefreshToken = (data) => {
     });
 }
 
-const authentication = async (req, resizeBy, next) => {
+const authentication = async (req, res, next) => {
     const auth = req.headers.authorization;
+    console.log(auth);
     if (!auth) {
-        return resizeBy.status(401).json({
+        return res.status(401).json({
             message: "authorization"
         });
     }
@@ -32,10 +33,32 @@ const authentication = async (req, resizeBy, next) => {
         req.user = verifyToken;
         next();
     } catch (err) {
+        console.error(err);
         return res.status(500).json({
             message: "Internal server error"
         });
     }
 }
 
-module.exports = { createAccessToken, createRefreshToken, authentication };
+const verifyCookie = async (req, res, next) => {
+    const { refreshToken } = req.cookies;
+    console.log(refreshToken);
+    if (!refreshToken) {
+        return res.status(401).json({
+            message: "Anda belum melakukan login"
+        });
+    }
+    try {
+        const payload = jwt.verify(refreshToken, secret);
+        req.user = payload;
+        req.refreshToken = refreshToken;
+        next();
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            message: "internal Server Error"
+        })
+    }
+}
+
+module.exports = { createAccessToken, createRefreshToken, authentication, verifyCookie };

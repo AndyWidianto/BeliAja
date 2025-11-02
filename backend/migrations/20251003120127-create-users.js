@@ -21,6 +21,9 @@ module.exports = {
       role: {
         type: Sequelize.ENUM("user", "admin", "super_admin")
       },
+      refreshToken: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

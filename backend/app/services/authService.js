@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const db = require("../../models");
 const bcrypt = require("bcrypt");
 const AppError = require("../untils/customError");
+const { createAccessToken, createRefreshToken } = require("../middleware/middleware");
 
 const register = async (id, username, email, password) => {
     const newPassword = await bcrypt.hash(password, 12);
@@ -21,7 +22,12 @@ const register = async (id, username, email, password) => {
         password: newPassword,
         role
     });
-    return result;
+    const accessToken = createAccessToken(result);
+    const refreshToken = createRefreshToken(result);
+    await result.update({
+        refreshToken
+    });
+    return { accessToken, refreshToken };
 }
 
 const login = async (email, password) => {
@@ -41,7 +47,12 @@ const login = async (email, password) => {
     if (!match) {
         throw new AppError("Password salah", 401);
     }
-    return userJson;
+    const accessToken = createAccessToken(userJson);
+    const refreshToken = createRefreshToken(userJson);
+    await user.update({
+        refreshToken
+    });
+    return { accessToken, refreshToken };
 }
 
 const getUsers = async () => {
@@ -49,5 +60,17 @@ const getUsers = async () => {
     return users;
 }
 
+const refreshToken = async (user, token) => {
+    const findUser = await db.users.findByPk(user.id);
+    if (!findUser) {
+        new AppError("user tidak ada", 404);
+    }
+    if (token !== findUser.refreshToken) {
+        new AppError("Anda tidak diizinkan untuk merubah membuat token baru", 403);
+    }
+    const newAccessToken = createAccessToken(findUser.toJSON());
+    return newAccessToken;
+}
 
-module.exports = { login, register, getUsers };
+
+module.exports = { login, register, getUsers, refreshToken };

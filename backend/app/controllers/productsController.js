@@ -2,9 +2,9 @@ const { createProduct, updateProduct, deleteProduct, getProducts, getProduct } =
 
 const createProductController = async (req, res, next) => {
     const user = req.user;
-    const { name, description, price, category_id, stock, image } = req.body;
+    const { name, description, category_id, image } = req.body;
     try {
-        const product = await createProduct(user, { name, description, price, category_id, stock, image });
+        const product = await createProduct(user, { name, description, category_id, image });
         return res.status(200).json({
             message: "Berhasil menambahkan produk",
             data: product
@@ -16,11 +16,11 @@ const createProductController = async (req, res, next) => {
 }
 
 const updateProductController = async (req, res, next) => {
-    const { name, description, price, category_id, stock, image } = req.body;
+    const { name, description, category_id, image } = req.body;
     const user = req.user;
     const { id } = req.params;
     try {
-        const product = await updateProduct(user, { id, name, description, price, category_id, stock, image });
+        const product = await updateProduct(user, { id, name, description, category_id, image });
         return res.status(200).json({
             message: "Berhasil update produk",
             data: product

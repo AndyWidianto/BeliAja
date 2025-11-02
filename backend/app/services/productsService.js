@@ -5,7 +5,7 @@ const generateSku = (name, id) => {
     const prefix = name.substring(0, 3).toUpperCase();
     return `${prefix}-${id}`;
 }
-const createProduct = async (user, { name, description, price, category_id, stock, image }) => {
+const createProduct = async (user, { name, description, category_id, image }) => {
     if (user.role !== "admin" || user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk membuat produk", 403);
     }
@@ -13,9 +13,7 @@ const createProduct = async (user, { name, description, price, category_id, stoc
     const product = await products.create({
         name,
         description, 
-        price, 
         category_id,
-        stock,
         image
     });
     const sku = generateSku(product.name, product.id);
@@ -23,7 +21,7 @@ const createProduct = async (user, { name, description, price, category_id, stoc
     return product;
 }
 
-const updateProduct = async (user, { id, name, description, price, stock, category_id, image }) => {
+const updateProduct = async (user, { id, name, description, category_id, image }) => {
     if (user.role !== "admin" || user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk mengupdate product", 403);
     }
@@ -35,8 +33,6 @@ const updateProduct = async (user, { id, name, description, price, stock, catego
     await product.update({
         name, 
         description, 
-        price, 
-        stock, 
         category_id,
         image, 
         sku
