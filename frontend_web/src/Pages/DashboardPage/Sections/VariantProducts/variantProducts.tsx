@@ -2,43 +2,77 @@ import Table from "../../../../components/table";
 import Thead from "../../../../components/thead";
 import Th from "../../../../components/th";
 import ThCheckAll from "../../../../components/thCheckAll";
-import type { VariantProduct } from "../../../../types";
+import type { VariantProduct, VariantProductRequest } from "../../../../types";
 import { Edit2, Trash2 } from "lucide-react";
 import Td from "../../../../components/td";
+import { useEffect, useState, type ChangeEvent } from "react";
+import Form from "../../../../components/form";
+import InputGroup from "../../../../components/inputGroup";
+import VariantProductPresenter from "./variantProductPresenter";
 
 export default function VariantProducts() {
 
+    const [show, setShow] = useState<boolean>(false);
+    const [isUpdate, setIsUpdate] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [variantProductId, setVariantProductId] = useState<string>("");
+    const [variantProductIds, setVariantProductIds] = useState<string[]>([]);
+    const [variantProduct, setVariantProduct] = useState<VariantProductRequest>({
+        product_id: "",
+        name_variant: "",
+        sku: "",
+        price: 0,
+        stock: 0
+    })
+    const [variantsProduct, setVariantsProduct] = useState<VariantProduct[]>([]);
+    const presenter = new VariantProductPresenter({
+        view: {
+            setLoading: setLoading,
+            setVariantsProduct: setVariantsProduct,
+            setIsUpdate: setIsUpdate,
+            setShow: setShow,
+            setVariantProductId: setVariantProductId,
+            setVariantProductIds: setVariantProductIds
+        }
+    });
 
-    const products: VariantProduct[] = [
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-        { id: 1, product: { id: 1, name: "hanphone 16 pro max", description: "andy@gmail.com", category: { id: "1", name: "categori", description: "" } }, name_variant: "hanphone 16 pro max xl", sku: "HP16", stock: 14, price: 1500000 },
-    ];
+    async function handleActions() {
+        if (isUpdate) {
+            return await presenter.updateVariantProduct(variantProduct, variantProductId);
+        }
+        await presenter.createVariantProduct(variantProduct);
+    }
+    function handleClose() {
+        setShow(false);
+    }
+    function handleInput(e: ChangeEvent<HTMLInputElement>) {
+        const name = e.target.name;
+        const value = e.target.value;
+        setVariantProduct((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+    function handleUpdate() {
 
-
+    }
+    useEffect(() => {
+        presenter.getVariantsProduct();
+    }, []);
     return (
         <>
-            {/* {show ?
+            {show ?
                 <>
                     <Form name="Create Categories" onSubmit={handleActions} isUpdate={isUpdate} loading={loading} Close={handleClose}>
-                        <InputGroup name="Name" value={category.name} onChange={handleUpdateCategory} />
-                        <GroupTextArea name="Description" value={category.description} onChange={handleUpdateCategory} />
+                        <InputGroup name="Name Variant" value={variantProduct.name_variant} required onChange={handleInput} />
+                        <InputGroup name="Price" value={`${variantProduct.price}`} required onChange={handleInput} />
+                        <InputGroup name="Stock" value={`${variantProduct.stock}`} required onChange={handleInput} />
                     </Form>
-                </> : <></>} */}
+                </> : <></>}
             <div className="p-2 grid grid-cols-1 gap-2">
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Variant Products</h2>
-                    <button onClick={() => {}} className="p-2 px-5 rounded-md bg-orange-600 text-white text-sm">Create New</button>
+                    <button onClick={() => { }} className="p-2 px-5 rounded-md bg-orange-600 text-white text-sm">Create New</button>
                 </div>
                 <div className="flex justify-around items-end gap-5 mt-5">
                     <div className="w-full">
@@ -67,7 +101,7 @@ export default function VariantProducts() {
                         Search
                     </button>
                 </div>
-                <Table>
+                <Table Edit={() => presenter.handleUpdate(variantsProduct, variantProductIds, variantProductId)} Delete={() => presenter.deleteVariantsProduct(variantProductIds)}>
                     <Thead>
                         <tr>
                             <ThCheckAll onClick={() => alert("Hallo")} />
@@ -81,7 +115,7 @@ export default function VariantProducts() {
                         </tr>
                     </Thead>
                     <tbody>
-                        {products.map((data, index) => (
+                        {variantsProduct.map((data, index) => (
                             <tr className={`${(index + 1) % 2 === 0 ? 'bg-gray-50' : ''}`}>
                                 <Td>
                                     <div className="flex w-full items-center justify-center h-full">
@@ -96,8 +130,8 @@ export default function VariantProducts() {
                                 <Td>{data.price}</Td>
                                 <Td>
                                     <div className="flex items-center gap-1">
-                                        <button className="p-2 px-3 rounded-md bg-yellow-600 text-white"><Edit2 size={16} /></button>
-                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white"><Trash2 size={16} /></button>
+                                        <button className="p-2 px-3 rounded-md bg-yellow-600 text-white" onClick={() => presenter.handleUpdate(variantsProduct, variantProductIds, variantProductId)}><Edit2 size={16} /></button>
+                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white" onClick={() => presenter.deleteVariantProduct(data.id)}><Trash2 size={16} /></button>
                                     </div>
                                 </Td>
                             </tr>

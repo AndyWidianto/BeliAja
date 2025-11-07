@@ -7,16 +7,12 @@ let token: string = "";
 export const ApiPublic: AxiosInstance = axios.create({
     baseURL: "http://localhost:3000/api",
     timeout: 30000,
-    headers: {
-        "Content-Type": "application/json"
-    }
 });
 
 export const ApiPrivate: AxiosInstance = axios.create({
     baseURL: "http://localhost:3000/api",
     timeout: 30000,
     headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
     }
 });

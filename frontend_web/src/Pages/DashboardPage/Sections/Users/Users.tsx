@@ -2,12 +2,12 @@ import Table from "../../../../components/table";
 import Thead from "../../../../components/thead";
 import Th from "../../../../components/th";
 import ThCheckAll from "../../../../components/thCheckAll";
-import type { User, UserRequest } from "../../../../types";
+import type { Role, User, UserRequest } from "../../../../types";
 import { Edit2, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import Form from "../../../../components/form";
 import InputGroup from "../../../../components/inputGroup";
-import GroupTextArea from "../../../../components/GroupTextArea";
+import UsersPresenter from "./usersPresenter";
 
 export default function Users() {
     const [user, setUser] = useState<UserRequest>({
@@ -19,22 +19,25 @@ export default function Users() {
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
     const [show, setShow] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const users: User[] = [
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-        { id: 1, username: "Andy", email: "andy@gmail.com", role: "admin" },
-    ];
-
+    const [userId, setUserId] = useState<string>("");
+    const [userIds, setUserIds] = useState<string[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+    const roles: Role[] = [
+        { id: 1, name: "Admin", role: "admin" },
+        { id: 2, name: "Super Admin", role: "super_admin" },
+        { id: 3, name: "User", role: "user" }
+    ]
+    const presenter = new UsersPresenter({
+        view: {
+            setLoading: setLoading,
+            setUserId: setUserId,
+            setUsers: setUsers,
+            setUserIds: setUserIds,
+            setShow: setShow,
+            setIsUpdate: setIsUpdate,
+            setUser: setUser
+        }
+    });
     function handleCreate() {
         setUser({
             username: "",
@@ -50,22 +53,23 @@ export default function Users() {
     }
     async function handleActions() {
     }
-    function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
-        const value = e.target.value;
-        const name = e.target.name;
-        setUser((prev: UserRequest) => ({
-            ...prev,
-            [name]: value
-        }));
-    }
+    useEffect(() => {
+        presenter.getUsers();
+    }, []);
     return (
         <>
             {show ?
                 <>
                     <Form name="Create Categories" onSubmit={handleActions} isUpdate={isUpdate} loading={loading} Close={handleClose}>
-                        <InputGroup name="Username" value={user.username} onChange={handleInput} />
-                        <InputGroup name="Username" value={user.email} onChange={handleInput} />
-                        <InputGroup name="Username" value={user.password} onChange={handleInput} />
+                        <InputGroup name="Username" value={user.username} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
+                        <InputGroup name="Email" value={user.email} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
+                        <InputGroup name="Password" value={user.password} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
+                        <select name="role" id="role" className="p-2 rounded-md px-4 border-1">
+                            <option value="">Select Role</option>
+                            {roles.map(role => (
+                                <option value={role.role} key={role.id} selected={role.role === user.role}>{role.name}</option>
+                            ))}
+                        </select>
                     </Form>
                 </> : <></>}
             <div className="p-2 grid grid-cols-1 gap-2">
@@ -97,10 +101,10 @@ export default function Users() {
                         </select>
                     </div>
                     <button className="p-2 px-5 bg-orange-600 text-white rounded-md">
-                        SEARCH
+                        Search
                     </button>
                 </div>
-                <Table>
+                <Table Edit={() => presenter.handleUpdate(users, userIds)}>
                     <Thead>
                         <tr>
                             <ThCheckAll onClick={() => alert("Hallo")} />
@@ -123,8 +127,8 @@ export default function Users() {
                                 <td className="py-1 border-b-1 border-gray-200">{data.role}</td>
                                 <td className="py-1 border-b-1 border-gray-200">
                                     <div className="flex items-center gap-1">
-                                        <button className="p-2 px-3 rounded-md bg-yellow-600 text-white"><Edit2 size={16} /></button>
-                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white"><Trash2 size={16} /></button>
+                                        <button className="p-2 px-3 rounded-md bg-yellow-600 text-white" onClick={() => presenter.handleUpdate(users, userIds, data?.id)}><Edit2 size={16} /></button>
+                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white" onClick={() => {}}><Trash2 size={16} /></button>
                                     </div>
                                 </td>
                             </tr>

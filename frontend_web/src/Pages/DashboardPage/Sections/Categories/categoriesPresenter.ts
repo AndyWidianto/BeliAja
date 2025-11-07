@@ -13,7 +13,7 @@ interface Props {
     view: CategoriesProps
 }
 
-const categoriesModel: CategoriesModel = new CategoriesModel();
+const categoriesModel = new CategoriesModel();
 export default class CategoriesPresenter {
 
     #view;
