@@ -9,6 +9,10 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue: Sequelize.literal('(UUID())')
       },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       name: {
         type: Sequelize.STRING
       },
@@ -24,9 +28,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
         onUpdate: "SET NULL"
-      },
-      image: {
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

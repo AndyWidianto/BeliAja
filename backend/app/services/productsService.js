@@ -1,48 +1,49 @@
 const AppError = require("../untils/customError");
-const { products } = require("../../models");
+const { products, categories } = require("../../models");
+const { Op } = require("sequelize");
 
-const generateSku = (name, id) => {
-    const prefix = name.substring(0, 3).toUpperCase();
-    return `${prefix}-${id}`;
-}
-const createProduct = async (user, { name, description, category_id, image }) => {
-    if (user.role !== "admin" || user.role !== "super_admin") {
+const createProduct = async (user, { name, description, category_id, file }) => {
+    if (user.role !== "admin" && user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk membuat produk", 403);
     }
-
+    const findCategory = await categories.findByPk(category_id);
+    if (!findCategory) {
+        throw new AppError("Category tidak tersedia", 404);
+    }
+    let imageUrl = null;
+    if (file) {
+        imageUrl = `/images/${imageUrl.filename}`;
+    }
     const product = await products.create({
         name,
-        description, 
-        category_id,
-        image
+        description,
+        category_id, 
+        image: imageUrl
     });
-    const sku = generateSku(product.name, product.id);
-    await product.update({ sku });
+
     return product;
 }
 
 const updateProduct = async (user, { id, name, description, category_id, image }) => {
-    if (user.role !== "admin" || user.role !== "super_admin") {
+    if (user.role !== "admin" && user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk mengupdate product", 403);
     }
     const product = await products.findByPk(id);
     if (!product) {
         throw new AppError("Product tidak tersedia", 404);
     }
-    const sku = generateSku(product.name, product.id);
     await product.update({
-        name, 
-        description, 
+        name,
+        description,
         category_id,
-        image, 
-        sku
+        image
     });
 
     return product;
 }
 
 const deleteProduct = async (user, id) => {
-    if (user.role !== 'admin' || user.role !== "super_admin") {
+    if (user.role !== 'admin' && user.role !== "super_admin") {
         throw new AppError("Anda tidak diizinkan untuk menghapus produk", 403);
     }
     return await products.destroy({
@@ -53,13 +54,34 @@ const deleteProduct = async (user, id) => {
 }
 
 const getProducts = async () => {
-    const Products = await products.findAll();
+    const Products = await products.findAll({
+        include: {
+            model: categories,
+            as: "category"
+        }
+    });
     return Products;
 }
 
 const getProduct = async (id) => {
-    const product = await products.findByPk(id);
+    const product = await products.findByPk(id, {
+        include: {
+            model: "categories",
+            as: "category"
+        }
+    });
     return product;
+}
+const deleteProducts = async (user, ids) => {
+    if (user.role !== "admin" && user.role !== "super_admin") {
+            }
+    return await products.destroy({
+        where: {
+            id: {
+                [Op.in]: ids
+            }
+        }
+    });
 }
 
 module.exports = {
@@ -67,5 +89,6 @@ module.exports = {
     updateProduct,
     deleteProduct,
     getProducts,
-    getProduct
+    getProduct,
+    deleteProducts
 }

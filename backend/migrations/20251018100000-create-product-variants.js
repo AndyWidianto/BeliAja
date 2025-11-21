@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('product_variants', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal('(UUID())'),
       },
       product_id: {
         type: Sequelize.UUID,
@@ -17,6 +17,10 @@ module.exports = {
           key: "id"
         },
         onDelete: "CASCADE"
+      },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       variant_name: {
         type: Sequelize.STRING,

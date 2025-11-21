@@ -5,9 +5,9 @@ module.exports = {
     await queryInterface.createTable('orders', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.literal('(UUID())'),
       },
       user_id: {
         type: Sequelize.UUID,
@@ -25,7 +25,7 @@ module.exports = {
         allowNull: false
       },
       payment_method_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: "payment_methods",
           key: "id"
@@ -36,7 +36,7 @@ module.exports = {
         allowNull: false
       },
       shipping_address_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         references: {
           model: "addresses",
           key: "id"

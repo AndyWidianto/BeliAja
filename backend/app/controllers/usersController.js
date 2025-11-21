@@ -1,11 +1,14 @@
-const { getUsers } = require("../services/authService");
-const { createUser, updateUser, deleteUser } = require("../services/usersService");
+const { createUser, updateUser, deleteUser, getUsers, deleteUsers } = require("../services/usersService");
 
 
 const getUsersController = async (req, res, next) => {
+    const user = req.user;
     try {
-        const users = await getUsers();
-        res.json(users);
+        const users = await getUsers(user);
+        res.json({
+            data: users,
+            message: ""
+        });
     } catch (err) {
         console.error(err);
         next(err);
@@ -53,5 +56,18 @@ const deleteUserController = async (req, res, next) => {
         next(err);
     }
 }
+const deleteUsersController = async (req, res, next) => {
+    const { ids } = req.body;
+    const user = req.user;
+    try {
+        await deleteUsers(user, ids);
+        return res.json({
+            message: "User berhasil di hapus"
+        });
+    } catch (err) {
+        console.error(err);
+        next(err);
+    }
+}
 
-module.exports = { getUsersController, createUserController, updateUserController, deleteUserController };
+module.exports = { getUsersController, createUserController, updateUserController, deleteUserController, deleteUsersController };

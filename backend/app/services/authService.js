@@ -55,11 +55,6 @@ const login = async (email, password) => {
     return { accessToken, refreshToken };
 }
 
-const getUsers = async () => {
-    const users = await db.users.findAll();
-    return users;
-}
-
 const refreshToken = async (user, token) => {
     const findUser = await db.users.findByPk(user.id);
     if (!findUser) {
@@ -73,4 +68,4 @@ const refreshToken = async (user, token) => {
 }
 
 
-module.exports = { login, register, getUsers, refreshToken };
+module.exports = { login, register, refreshToken };
