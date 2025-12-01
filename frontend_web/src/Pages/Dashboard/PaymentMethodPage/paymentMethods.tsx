@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import Table from "../../../../components/table";
-import Th from "../../../../components/th";
-import ThCheckAll from "../../../../components/thCheckAll";
-import Thead from "../../../../components/thead";
-import type { PaymentMethod, PaymentMethodRequest, Status } from "../../../../types";
-import Form from "../../../../components/form";
-import InputGroup from "../../../../components/inputGroup";
-import GroupTextArea from "../../../../components/GroupTextArea";
+import Table from "../../../components/table";
+import Th from "../../../components/th";
+import ThCheckAll from "../../../components/thCheckAll";
+import Thead from "../../../components/thead";
+import type { PaymentMethod, PaymentMethodRequest, Status } from "../../../types";
+import Form from "../../../components/form";
+import InputGroup from "../../../components/inputGroup";
+import GroupTextArea from "../../../components/GroupTextArea";
 import { Camera, Edit2, Trash2 } from "lucide-react";
 import PaymentMethodPresenter from "./paymentMethodPresenter";
 

@@ -1,5 +1,5 @@
 import { ApiPrivate } from ".";
-import type { CategoryRequest, CategoriesResponse, CategoryResponse } from "../types";
+import type { CategoriesResponse, CategoryResponse } from "../types";
 
 export default class CategoriesModel {
     
@@ -8,13 +8,13 @@ export default class CategoriesModel {
         return res.data;
     }
 
-    async createCategory(request : CategoryRequest): Promise<CategoryResponse> {
-        const res = await ApiPrivate.post<CategoryResponse>("/category", request);
+    async createCategory(data: FormData): Promise<CategoryResponse> {
+        const res = await ApiPrivate.post<CategoryResponse>("/category", data);
         return res.data;
     }
 
-    async updateCategory(request : CategoryRequest, id : string): Promise<CategoryResponse> {
-        const res = await ApiPrivate.post<CategoryResponse>(`/category/${id}`, request);
+    async updateCategory(data: FormData, id : string): Promise<CategoryResponse> {
+        const res = await ApiPrivate.post<CategoryResponse>(`/category/${id}`, data);
         return res.data;
     }
 }

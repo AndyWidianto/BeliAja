@@ -9,11 +9,12 @@ export default function InputGroup({ name, onChange, value, required } : InputGr
 
     function handleName(name: string) {
         const nameSplit = name.split(" ");
-        if (!nameSplit) {
-            return name.toLowerCase()
+        console.log("name split: ", nameSplit);
+        if (nameSplit.length === 1) {
+            return name.toLowerCase();
         }
         const newName = name.replace(/\s+/g, "_");
-        return newName;
+        return newName.toLowerCase();
     }
     return (
         <>

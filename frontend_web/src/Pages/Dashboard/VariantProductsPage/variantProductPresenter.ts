@@ -1,30 +1,40 @@
 import type { ChangeEvent } from "react";
-import VariantProductModel from "../../../../models/variantProduct";
-import type { DeleteResponse, VariantProduct, VariantProductRequest, VariantProductResponse, VariantsProductResponse } from "../../../../types";
+import VariantProductModel from "../../../models/variantProduct";
+import type { DeleteResponse, Product, ProductsResponse, PropsVariantProduct, VariantProduct, VariantProductRequest, VariantProductResponse, VariantsProductResponse } from "../../../types";
+import ProductsModel from "../../../models/products";
 
-interface Props {
-    view: View
-}
-interface View {
-    setLoading: Function,
-    setVariantsProduct: Function,
-    setVariantProductId: Function,
-    setVariantProductIds: Function,
-    setShow: Function,
-    setIsUpdate: Function
-}
 const variantProductModel = new VariantProductModel();
+const productsModel = new ProductsModel();
 export default class VariantProductPresenter {
     #view;
 
-    constructor({ view }: Props) {
+    constructor({ view }: PropsVariantProduct) {
         this.#view = view;
     }
     async createVariantProduct(request: VariantProductRequest): Promise<void> {
         this.#view.setLoading(true);
         try {
-            const res: VariantProductResponse = await variantProductModel.createVariantProduct(request);
-            this.#view.setVariantsProduct(res.data);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+            const res: VariantProductResponse = await variantProductModel.createVariantProduct(formData);
+            this.#view.setVariantsProduct((prev: VariantProduct[]) => [res.data, ...prev]);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            this.#view.setLoading(false);
+        }
+    }
+    async getProducts(): Promise<void> {
+        this.#view.setLoading(true);
+        try {
+            const res: ProductsResponse = await productsModel.getProducts();
+            const newRes = res.data.map((val: Product) => {
+                val.checked = false;
+                return { ...val };
+            })
+            this.#view.setProducts(newRes);
         } catch (err) {
             console.error(err);
         } finally {
@@ -34,7 +44,11 @@ export default class VariantProductPresenter {
     async updateVariantProduct(request: VariantProductRequest, id: string): Promise<void> {
         this.#view.setLoading(true);
         try {
-            const res: VariantProductResponse = await variantProductModel.updateVariantProduct(request, id);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+            const res: VariantProductResponse = await variantProductModel.updateVariantProduct(formData, id);
             console.log(res);
             this.#view.setVariantsProduct((prev: VariantProduct[]) => prev.map(val => {
                 if (val.id === id) {
@@ -48,9 +62,10 @@ export default class VariantProductPresenter {
             this.#view.setLoading(false);
         }
     }
-    async getVariantsProduct(): Promise<void> {
+    async getVariantsProduct(limit: number, page: number, search?: string): Promise<void> {
         try {
-            const res: VariantsProductResponse = await variantProductModel.getVariantsProduct();
+            const offset = (page - 1) * limit;
+            const res: VariantsProductResponse = await variantProductModel.getVariantsProduct(limit, offset, search);
             console.log(res);
             this.#view.setVariantsProduct(res.data);
         } catch (err) {
@@ -76,12 +91,12 @@ export default class VariantProductPresenter {
         }
     }
     handleCreate() {
-        this.#view.setVariantsProduct({
-            product_id: "",
-            name_variant: "",
-            sku: "",
-            price: 0,
-            stock: 0
+        this.#view.setVariantProduct((prev: VariantProductRequest) => {
+            prev.product_id = "";
+            prev.variant_name = "";
+            prev.price = 0;
+            prev.stock = 0;
+            return prev;
         });
         this.#view.setIsUpdate(false);
         this.#view.setShow(true);
@@ -95,10 +110,9 @@ export default class VariantProductPresenter {
         }
         const product = variantsProduct.find((val: VariantProduct) => val.id === id);
         if (!product) return alert("Click product dulu dong");
-        this.#view.setVariantsProduct((prev: VariantProductRequest) => {
+        this.#view.setVariantProduct((prev: VariantProductRequest) => {
             prev.product_id = product.product.id;
-            prev.name_variant = product.name_variant;
-            prev.sku = product.sku;
+            prev.variant_name = product.variant_name;
             prev.price = product.price;
             prev.stock = product.stock;
             return prev;
@@ -125,5 +139,33 @@ export default class VariantProductPresenter {
             }
             return { ...val };
         }))
+    }
+    handleChangeImage(e: ChangeEvent<HTMLInputElement>) {
+        const name = e.target.name;
+        const file: File | undefined = (e.target as HTMLInputElement).files?.[0];
+        this.#view.setVariantProduct((prev: VariantProduct) => ({
+            ...prev,
+            [name]: file
+        }));
+        if (file) {
+            const imageUrl: string = URL.createObjectURL(file);
+            this.#view.setShowImage(imageUrl);
+        }
+    }
+    handleInput(e: ChangeEvent<HTMLInputElement>) {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.#view.setVariantProduct((prev: VariantProduct) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+    handleSelect(e: ChangeEvent<HTMLSelectElement>) {
+        const name = e.target.name;
+        const value = e.target.value;
+        this.#view.setVariantProduct((prev: VariantProduct) => ({
+            ...prev,
+            [name]: value
+        }));
     }
 }

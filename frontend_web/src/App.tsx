@@ -1,24 +1,30 @@
 import { Route, Routes } from "react-router-dom";
 import LoginPage from "./Pages/loginPage/loginPage";
 import RegisterPage from "./Pages/RegisterPage/registerPage";
-import DashboardPage from "./Pages/DashboardPage/dashboardPage";
-import Dashboard from "./Pages/DashboardPage/Sections/Dashboard/dashboard";
-import Users from "./Pages/DashboardPage/Sections/Users/Users";
-import PaymentMethods from "./Pages/DashboardPage/Sections/PaymentMethod/paymentMethods";
-import Categories from "./Pages/DashboardPage/Sections/Categories/categories";
+import Dashboard from "./Pages/Dashboard/DashboardPage/dashboard";
+import Users from "./Pages/Dashboard/UsersPage/Users";
+import PaymentMethods from "./Pages/Dashboard/PaymentMethodPage/paymentMethods";
+import Categories from "./Pages/Dashboard/CategoriesPage/categories";
 import Percobaan from "./percobaan";
-import Products from "./Pages/DashboardPage/Sections/Products/products";
-import VariantProducts from "./Pages/DashboardPage/Sections/VariantProducts/variantProducts";
+import Products from "./Pages/Dashboard/ProductsPage/products";
+import VariantProducts from "./Pages/Dashboard/VariantProductsPage/variantProducts";
 import Authorization from "./authorization";
+import LandingPage from "./Pages/LandingPage/landingPage";
+import HomePage from "./Pages/Home/HomePage/homePage";
+import DashboardLayout from "./Pages/Layouts/DashboardLayout/dashboardLayout";
+import HomeLayout from "./Pages/Layouts/HomeLayout/homeLayout";
+import DetailProductPage from "./Pages/Home/DetailProductPage/detailProductPage";
+import PaymentPage from "./Pages/Home/PaymentPage/paymentPage";
 
 function App() {
 
   return (
     <>
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/dashboard" element={<Authorization><DashboardPage /></Authorization>}>
+      <Route path="/dashboard" element={<Authorization><DashboardLayout /></Authorization>}>
         <Route index element={<Dashboard />} />
         <Route path="users" element={<Users />} />
         <Route path="payment-methods" element={<PaymentMethods />} />
@@ -26,6 +32,11 @@ function App() {
         <Route path="products" element={<Products />} />
         <Route path="variant-products" element={<VariantProducts />} />
       </Route>
+      <Route path="/home" element={<HomeLayout />}>
+        <Route index element={<HomePage />} />
+        <Route path="product/:id" element={<DetailProductPage />} />
+      </Route>
+      <Route path="/payment" element={<PaymentPage />} />
       <Route path="/percobaan" element={<Percobaan />} />
     </Routes>
     </>

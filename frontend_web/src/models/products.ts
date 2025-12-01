@@ -9,13 +9,13 @@ export default class ProductsModel {
         return res.data;
     }
 
-    async createProduct(request : ProductRequest): Promise<ProductResponse> {
-        const res : AxiosResponse = await ApiPrivate.post<ProductResponse>("/product", request);
+    async createProduct(data: FormData): Promise<ProductResponse> {
+        const res : AxiosResponse = await ApiPrivate.post<ProductResponse>("/product", data);
         return res.data;
     }
 
-    async updateProduct(request : ProductRequest, id : string): Promise<ProductResponse> {
-        const res : AxiosResponse = await ApiPrivate.post<ProductResponse>(`/product/${id}`, request);
+    async updateProduct(data: FormData, id : string): Promise<ProductResponse> {
+        const res : AxiosResponse = await ApiPrivate.post<ProductResponse>(`/product/${id}`, data);
         return res.data;
     }
 

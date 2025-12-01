@@ -1,6 +1,6 @@
 import { ShoppingCart, Users2 } from "lucide-react";
-import Chart from "../../../../components/chart";
-import Card from "../../../../components/card";
+import Chart from "../../../components/chart";
+import Card from "../../../components/card";
 
 interface data {
     name: string,

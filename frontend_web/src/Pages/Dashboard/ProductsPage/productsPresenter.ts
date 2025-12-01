@@ -1,22 +1,7 @@
 import type { ChangeEvent } from "react";
-import ProductsModel from "../../../../models/products";
-import type { CategoriesResponse, DeleteResponse, Product, ProductRequest, ProductResponse, ProductsResponse } from "../../../../types";
-import CategoriesModel from "../../../../models/categories";
-
-interface Props {
-    view: ViewProps
-}
-interface ViewProps {
-    setProducts: Function,
-    setLoading: Function,
-    setShow: Function,
-    setProduct: Function,
-    setIsUpdate: Function,
-    setProductIds: Function,
-    setProductId: Function,
-    setCategories: Function,
-    setImage: Function
-}
+import ProductsModel from "../../../models/products";
+import type { CategoriesResponse, DeleteResponse, Product, ProductRequest, ProductResponse, ProductsResponse, PropsProductPresenter } from "../../../types";
+import CategoriesModel from "../../../models/categories";
 
 const productsModel = new ProductsModel();
 const categoriesModel: CategoriesModel = new CategoriesModel();
@@ -24,7 +9,7 @@ const categoriesModel: CategoriesModel = new CategoriesModel();
 export default class ProductPresenter {
 
     #view;
-    constructor({ view }: Props) {
+    constructor({ view }: PropsProductPresenter) {
         this.#view = view;
     }
 
@@ -33,10 +18,11 @@ export default class ProductPresenter {
         this.#view.setLoading(true);
         try {
             const res: ProductsResponse = await productsModel.getProducts();
+            console.log(res);
             const newRes = res.data.map((val: Product) => {
                 val.checked = false;
                 return { ...val };
-            })
+            });
             this.#view.setProducts(newRes);
         } catch (err) {
             console.error(err);
@@ -48,7 +34,11 @@ export default class ProductPresenter {
     async updateProduct(request: ProductRequest, id: string) {
         this.#view.setLoading(true);
         try {
-            const res: ProductResponse = await productsModel.updateProduct(request, id);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, val]) => {
+                formData.append(key, val);
+            });
+            const res: ProductResponse = await productsModel.updateProduct(formData, id);
             this.#view.setProducts((prev: Product[]) => (
                 prev.map((val: Product) => {
                     if (val.id === id) {
@@ -70,9 +60,13 @@ export default class ProductPresenter {
     async createProduct(request: ProductRequest): Promise<void> {
         this.#view.setLoading(true);
         try {
-            const res: ProductResponse = await productsModel.createProduct(request);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, val]) => {
+                formData.append(key, val);
+            })
+            const res: ProductResponse = await productsModel.createProduct(formData);
             console.log(res);
-            this.#view.setProducts(res.data);
+            this.#view.setProducts((prev: Product[]) => [res.data, ...prev]);
         } catch (err) {
             console.error(err);
         } finally {
@@ -105,7 +99,14 @@ export default class ProductPresenter {
             [name]: value
         }));
     }
-
+    handleSelect(e: ChangeEvent<HTMLSelectElement>) {
+        const value = e.target.value;
+        const name = e.target.name;
+        this.#view.setProduct((prev: ProductRequest) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
     handleCreate() {
         this.#view.setProduct({
             name: "",

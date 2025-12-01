@@ -1,12 +1,12 @@
-import Table from "../../../../components/table";
-import Thead from "../../../../components/thead";
-import Th from "../../../../components/th";
-import ThCheckAll from "../../../../components/thCheckAll";
-import type { Role, User, UserRequest } from "../../../../types";
+import Table from "../../../components/table";
+import Thead from "../../../components/thead";
+import Th from "../../../components/th";
+import ThCheckAll from "../../../components/thCheckAll";
+import type { Role, User, UserRequest } from "../../../types";
 import { Edit2, Trash2 } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
-import Form from "../../../../components/form";
-import InputGroup from "../../../../components/inputGroup";
+import Form from "../../../components/form";
+import InputGroup from "../../../components/inputGroup";
 import UsersPresenter from "./usersPresenter";
 
 export default function Users() {
@@ -38,20 +38,14 @@ export default function Users() {
             setUser: setUser
         }
     });
-    function handleCreate() {
-        setUser({
-            username: "",
-            password: "",
-            email: "",
-            role: ""
-        });
-        setIsUpdate(false);
-        setShow(true);
-    }
     function handleClose() {
         setShow(false);
     }
     async function handleActions() {
+        if (isUpdate) {
+            return await presenter.updateUser(userId, user);
+        } 
+        await presenter.createUser(user);
     }
     useEffect(() => {
         presenter.getUsers();
@@ -64,7 +58,7 @@ export default function Users() {
                         <InputGroup name="Username" value={user.username} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
                         <InputGroup name="Email" value={user.email} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
                         <InputGroup name="Password" value={user.password} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
-                        <select name="role" id="role" className="p-2 rounded-md px-4 border-1">
+                        <select name="role" id="role" className="p-2 rounded-md px-4 border-1" onChange={(e: ChangeEvent<HTMLSelectElement>) => presenter.handleSelect(e)}>
                             <option value="">Select Role</option>
                             {roles.map(role => (
                                 <option value={role.role} key={role.id} selected={role.role === user.role}>{role.name}</option>
@@ -75,7 +69,7 @@ export default function Users() {
             <div className="p-2 grid grid-cols-1 gap-2">
                 <div className="flex justify-between items-center">
                     <h2 className="text-xl font-semibold">Users</h2>
-                    <button onClick={handleCreate} className="p-2 px-5 rounded-md bg-orange-600 text-white text-sm">Create New</button>
+                    <button onClick={() => presenter.handleCreate()} className="p-2 px-5 rounded-md bg-orange-600 text-white text-sm">Create New</button>
                 </div>
                 <div className="flex justify-around items-end gap-5 mt-5">
                     <div className="w-full">
@@ -104,7 +98,7 @@ export default function Users() {
                         Search
                     </button>
                 </div>
-                <Table Edit={() => presenter.handleUpdate(users, userIds)}>
+                <Table Edit={() => presenter.handleUpdate(users, userIds)} Delete={() => presenter.deleteUsers(userIds)}>
                     <Thead>
                         <tr>
                             <ThCheckAll onClick={() => alert("Hallo")} />
@@ -116,19 +110,19 @@ export default function Users() {
                     </Thead>
                     <tbody>
                         {users.map((data, index) => (
-                            <tr className={`${(index + 1) % 2 === 0 ? 'bg-gray-100' : ''}`}>
+                            <tr className={`${(index + 1) % 2 === 0 ? 'bg-gray-100' : ''}`} key={data?.id}>
                                 <td className="py-1 border-b-1 border-gray-200">
                                     <div className="flex w-full items-center justify-center h-full">
                                         <input type="checkbox" name="" className="w-[16px] h-[16px] rounded-sm" id="" />
                                     </div>
                                 </td>
-                                <td className="py-1 border-b-1 border-gray-200">{data.username}</td>
-                                <td className="py-1 border-b-1 border-gray-200">{data.email}</td>
-                                <td className="py-1 border-b-1 border-gray-200">{data.role}</td>
+                                <td className="py-1 border-b-1 border-gray-200">{data?.username}</td>
+                                <td className="py-1 border-b-1 border-gray-200">{data?.email}</td>
+                                <td className="py-1 border-b-1 border-gray-200">{data?.role}</td>
                                 <td className="py-1 border-b-1 border-gray-200">
                                     <div className="flex items-center gap-1">
                                         <button className="p-2 px-3 rounded-md bg-yellow-600 text-white" onClick={() => presenter.handleUpdate(users, userIds, data?.id)}><Edit2 size={16} /></button>
-                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white" onClick={() => {}}><Trash2 size={16} /></button>
+                                        <button className="p-2 px-3 rounded-md bg-red-600 text-white" onClick={() => presenter.deleteUser(data?.id)}><Trash2 size={16} /></button>
                                     </div>
                                 </td>
                             </tr>

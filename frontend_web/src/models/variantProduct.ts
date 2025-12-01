@@ -1,19 +1,19 @@
 import type { AxiosResponse } from "axios";
-import type { DeleteResponse, VariantProductRequest, VariantProductResponse, VariantsProductResponse } from "../types";
+import type { DeleteResponse, VariantProductResponse, VariantsProductResponse } from "../types";
 import { ApiPrivate, ApiPublic } from ".";
 
 export default class VariantProductModel {
 
-    async createVariantProduct(request: VariantProductRequest): Promise<VariantProductResponse> {
-        const res: AxiosResponse = await ApiPrivate.post<VariantProductResponse>("/variant-product", request);
+    async createVariantProduct(formData: FormData): Promise<VariantProductResponse> {
+        const res: AxiosResponse = await ApiPrivate.post<VariantProductResponse>("/variant-product", formData);
         return res.data;
     }
-    async updateVariantProduct(request: VariantProductRequest, id: string): Promise<VariantProductResponse> {
-        const res: AxiosResponse = await ApiPrivate.post<VariantProductResponse>(`/variant-product/${id}`, request);
+    async updateVariantProduct(formData: FormData, id: string): Promise<VariantProductResponse> {
+        const res: AxiosResponse = await ApiPrivate.post<VariantProductResponse>(`/variant-product/${id}`, formData);
         return res.data;
     }
-    async getVariantsProduct(): Promise<VariantsProductResponse> {
-        const res: AxiosResponse = await ApiPublic.get<VariantsProductResponse>("/variants-product");
+    async getVariantsProduct(limit: number, offset: number, search?: string): Promise<VariantsProductResponse> {
+        const res: AxiosResponse = await ApiPublic.get<VariantsProductResponse>(`/variants-product?limit=${limit}&offset=${offset}&${search ? `search=${search}` : ''}`);
         return res.data;
     }
     async deleteVariantProduct(id: string): Promise<DeleteResponse> {

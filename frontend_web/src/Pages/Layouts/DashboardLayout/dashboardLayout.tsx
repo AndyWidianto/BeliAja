@@ -1,14 +1,15 @@
 import { useState } from "react"
-import Sidebar from "./Components/Sidebar"
-import Navbar from "./Components/navbar";
 import { Outlet } from "react-router-dom";
+import Sidebar from "./Components/Sidebar";
+import Navbar from "./Components/navbar";
 
-export default function DashboardPage() {
+export default function DashboardLayout() {
     const [showSide, setShowSide] = useState<boolean>(true);
 
     function handleShowSide() {
         setShowSide(!showSide);
     }
+    
     return (
         <>
             <Sidebar show={showSide} setShow={handleShowSide} />

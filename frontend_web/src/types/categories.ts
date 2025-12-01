@@ -13,7 +13,8 @@ export interface CategoriesResponse {
 
 export interface CategoryRequest {
     name: string, 
-    description: string
+    description: string,
+    icon: File | null
 }
 
 export interface CategoryResponse {

@@ -1,5 +1,6 @@
-import UsersModel from "../../../../models/users";
-import type { DeleteResponse, User, UserRequest, UserResponse, UsersResponse } from "../../../../types";
+import type { ChangeEvent } from "react";
+import UsersModel from "../../../models/users";
+import type { DeleteResponse, User, UserRequest, UserResponse, UsersResponse } from "../../../types";
 
 interface Props {
     view: View
@@ -23,6 +24,7 @@ export default class UsersPresenter {
     async getUsers(): Promise<void> {
         try {
             const res: UsersResponse = await usersModel.getUsers();
+            console.log(res);
             this.#view.setUsers(res.data);
         } catch (err) {
             console.error(err);
@@ -31,7 +33,9 @@ export default class UsersPresenter {
     async createUser(request: UserRequest): Promise<void> {
         this.#view.setLoading(true);
         try {
+            console.log(request);
             const res: UserResponse = await usersModel.createUser(request);
+            console.log(res);
             this.#view.setUsers((prev: User[]) => [res.data, ...prev]);
         } catch (err) {
             console.error(err);
@@ -43,6 +47,7 @@ export default class UsersPresenter {
         this.#view.setLoading(true);
         try {
             const res: UserResponse = await usersModel.updateUser(id, request);
+            console.log(res);
             this.#view.setUsers((prev: User[]) => prev.map(val => {
                 if (val.id === id) {
                     val = res.data;
@@ -56,22 +61,34 @@ export default class UsersPresenter {
         }
     }
     async deleteUser(id: string): Promise<void> {
+        if (!confirm("Apakah anda yakin ingin menghapusnya?")) return;
         try {
             const res: DeleteResponse = await usersModel.deleteUser(id);
             console.log(res.message);
+            this.#view.setUsers((prev: User[]) => prev.filter(val => val.id !== id));
         } catch (err) {
             console.error(err);
         }
     }
     async deleteUsers(ids: string[]): Promise<void> {
+        if (!confirm("Apakah anda yakin ingin menghapusnya?")) return;
         try {
             const res: DeleteResponse = await usersModel.deleteUsers(ids);
             console.log(res);
+            this.getUsers();
         } catch (err) {
             console.error(err);
         }
     }
-    handleInput(e: React.ChangeEvent<HTMLInputElement>) {
+    handleInput(e: ChangeEvent<HTMLInputElement>) {
+        const value = e.target.value;
+        const name = e.target.name;
+        this.#view.setUser((prev: UserRequest) => ({
+            ...prev,
+            [name]: value
+        }));
+    }
+    handleSelect(e: ChangeEvent<HTMLSelectElement>) {
         const value = e.target.value;
         const name = e.target.name;
         this.#view.setUser((prev: UserRequest) => ({
@@ -104,6 +121,16 @@ export default class UsersPresenter {
             });
             this.#view.setUserId(ids[0])
         }
+    }
+    handleCreate() {
+        this.#view.setUser({
+            username: "",
+            password: "",
+            email: "",
+            role: ""
+        });
+        this.#view.setIsUpdate(false);
+        this.#view.setShow(true);
     }
     handleChecked(id: string) {
         this.#view.setUserIds((prev: string) => [...prev, id]);

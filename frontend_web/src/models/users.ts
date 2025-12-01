@@ -5,7 +5,7 @@ import { ApiPrivate } from ".";
 export default class UsersModel {
 
     async getUsers(): Promise<UsersResponse> {
-        const res: AxiosResponse = await ApiPrivate.get<UsersResponse>("/users");
+        const res: AxiosResponse = await ApiPrivate.get<UsersResponse>(`/users`);
         return res.data;
     }
     async createUser(request: UserRequest): Promise<UserResponse> {

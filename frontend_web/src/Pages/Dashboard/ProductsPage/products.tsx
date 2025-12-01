@@ -1,14 +1,14 @@
-import Table from "../../../../components/table";
-import Thead from "../../../../components/thead";
-import Th from "../../../../components/th";
-import ThCheckAll from "../../../../components/thCheckAll";
-import type { Category, Product, ProductRequest } from "../../../../types";
+import Table from "../../../components/table";
+import Thead from "../../../components/thead";
+import Th from "../../../components/th";
+import ThCheckAll from "../../../components/thCheckAll";
+import type { Category, Product, ProductRequest } from "../../../types";
 import { Camera, Edit2, Trash2 } from "lucide-react";
-import Td from "../../../../components/td";
+import Td from "../../../components/td";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import Form from "../../../../components/form";
-import InputGroup from "../../../../components/inputGroup";
-import GroupTextArea from "../../../../components/GroupTextArea";
+import Form from "../../../components/form";
+import InputGroup from "../../../components/inputGroup";
+import GroupTextArea from "../../../components/GroupTextArea";
 import ProductPresenter from "./productsPresenter";
 
 
@@ -17,7 +17,8 @@ export default function Products() {
     const [product, setProduct] = useState<ProductRequest>({
         name: "",
         description: "",
-        category_id: ""
+        category_id: "",
+        image: null
     });
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
     const [show, setShow] = useState<boolean>(false);
@@ -69,7 +70,7 @@ export default function Products() {
                         </div>
                         <InputGroup name="Name" value={product.name} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
                         <GroupTextArea name="Description" value={product.description} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
-                        <select name="" id="" required className="p-2 w-full rounded-md border-1 border-gray-500">
+                        <select name="category_id" id="category_id" required className="p-2 w-full rounded-md border-1 border-gray-500" onChange={(e: ChangeEvent<HTMLSelectElement>) => presenter.handleSelect(e)}>
                             <option value="">Select Category</option>
                             {categories.map(data => (
                                 <option value={data.id} key={data?.id}>{data.name}</option>

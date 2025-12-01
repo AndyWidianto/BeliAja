@@ -1,25 +1,29 @@
-import { useEffect, useState, type ChangeEvent } from "react";
-import Table from "../../../../components/table";
-import Th from "../../../../components/th";
-import ThCheckAll from "../../../../components/thCheckAll";
-import Thead from "../../../../components/thead";
-import type { CategoryRequest, Category } from "../../../../types";
-import Form from "../../../../components/form";
-import InputGroup from "../../../../components/inputGroup";
-import GroupTextArea from "../../../../components/GroupTextArea";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import Table from "../../../components/table";
+import Th from "../../../components/th";
+import ThCheckAll from "../../../components/thCheckAll";
+import Thead from "../../../components/thead";
+import type { CategoryRequest, Category } from "../../../types";
+import Form from "../../../components/form";
+import InputGroup from "../../../components/inputGroup";
+import GroupTextArea from "../../../components/GroupTextArea";
 import CategoriesPresenter from "./categoriesPresenter";
 import { Edit2, Trash2 } from "lucide-react";
 
+const icon = "https://static.vecteezy.com/system/resources/previews/000/460/483/original/vector-electronic-technology-devices-icon.jpg";
 export default function Categories() {
     const [show, setShow] = useState<boolean>(false);
+    const [showIcon, setShowIcon] = useState<string>(icon);
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [listCategories, setListCategories] = useState<string[]>([]);
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
     const [category, setCategory] = useState<CategoryRequest>({
         name: "",
-        description: ""
+        description: "",
+        icon: null,
     });
+    const refIcon = useRef<HTMLInputElement | null>(null);
 
     const presenter: CategoriesPresenter = new CategoriesPresenter({
         view: {
@@ -32,11 +36,23 @@ export default function Categories() {
         }
     });
 
-    async function handleActions(isUpdate : boolean) {
+    async function handleActions() {
         if (isUpdate) {
             return await presenter.updateCategory(category, listCategories[0]);
         }
         await presenter.createCategory(category);
+    }
+
+    function handleSelectIcon(e: ChangeEvent<HTMLInputElement>) {
+        const name = e.target.name;
+        const value: File | undefined = e.target.files?.[0];
+        if (value) {
+            setCategory(prev => ({
+                ...prev,
+                [name]: value
+            }));
+            setShowIcon(URL.createObjectURL(value));
+        }
     }
 
     useEffect(() => {
@@ -46,9 +62,16 @@ export default function Categories() {
         <>
             {show ?
                 <>
-                    <Form name="Create Categories" onSubmit={handleActions} isUpdate={isUpdate} loading={loading} Close={presenter.handleClose}>
-                        <InputGroup name="Name" value={category.name} onChange={(e : ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
-                        <GroupTextArea name="Description" value={category.description} onChange={(e : ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
+                    <Form name="Create Categories" onSubmit={handleActions} isUpdate={isUpdate} loading={loading} Close={() => presenter.handleClose()}>
+                        <div className="flex flex-col justify-center items-center">
+                            <label htmlFor="icon" className="font-semibold">Icon</label>
+                            <button type="button" className="w-20 h-20 rounded-full" onClick={() => refIcon.current?.click()}>
+                                <img src={showIcon} alt="icon" className="w-20 h-20 rounded-full shadow-xl fill-cover" />
+                            </button>
+                            <input type="file" name="icon" id="icon" onChange={handleSelectIcon} ref={refIcon} hidden />
+                        </div>
+                        <InputGroup name="Name" value={category.name} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
+                        <GroupTextArea name="Description" value={category.description} onChange={(e: ChangeEvent<HTMLInputElement>) => presenter.handleInput(e)} />
                     </Form>
                 </> : <></>}
             <div className="p-2 grid grid-cols-1 gap-2">

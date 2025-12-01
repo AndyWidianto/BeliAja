@@ -28,7 +28,7 @@ interface Transaction {
 type PaymentMethod = 'credit' | 'bank' | 'ewallet' | 'cod';
 type Courier = 'JNE' | 'TIKI' | 'POS' | 'GoSend' | 'GrabExpress';
 
-export default function Percobaan() {
+export default function PaymentPage() {
   const [products, setProducts] = useState<Product[]>([
     { id: 1, name: 'Laptop ASUS ROG', price: 15000000, qty: 1 },
     { id: 2, name: 'Mouse Logitech MX Master', price: 1200000, qty: 2 },

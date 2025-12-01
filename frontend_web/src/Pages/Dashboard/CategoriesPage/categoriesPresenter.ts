@@ -1,5 +1,5 @@
-import CategoriesModel from "../../../../models/categories";
-import type { CategoryResponse, CategoriesResponse, CategoryRequest, Category } from "../../../../types";
+import CategoriesModel from "../../../models/categories";
+import type { CategoryResponse, CategoriesResponse, CategoryRequest, Category } from "../../../types";
 
 interface CategoriesProps {
     setCategories: Function,
@@ -32,6 +32,7 @@ export default class CategoriesPresenter {
                     ...val
                 }
             });
+            console.log(res);
             this.#view.setCategories(categories);
         } catch (err) {
             console.error(err);
@@ -43,9 +44,13 @@ export default class CategoriesPresenter {
     async createCategory(request: CategoryRequest): Promise<void> {
         if (request.description === "" || request.name === "") return;
         try {
-            const res: CategoryResponse = await categoriesModel.createCategory(request);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, val]) => {
+                formData.append(key, val);
+            });
+            const res: CategoryResponse = await categoriesModel.createCategory(formData);
             console.log(res);
-            this.#view.setCategories((prev: Category[]) => [res.data, ...prev])
+            this.#view.setCategories((prev: Category[]) => [res.data, ...prev]);
         } catch (err) {
             console.error(err);
         }
@@ -53,13 +58,17 @@ export default class CategoriesPresenter {
 
     async updateCategory(request: CategoryRequest, id: string): Promise<void> {
         try {
-            const res: CategoryResponse = await categoriesModel.updateCategory(request, id);
+            const formData = new FormData();
+            Object.entries(request).forEach(([key, val]) => {
+                formData.append(key, val);
+            });
+            const res: CategoryResponse = await categoriesModel.updateCategory(formData, id);
             console.log("update category", res.data);
             this.#view.setCategories((prev: Category[]) => {
                 const newPrev: Category[] = prev.map((val: Category) => {
                     if (val.id === id) {
-                        val.name = res.data.name;
-                        val.description = res.data.description;
+                        val = res.data;
+                        val.checked = true;
                     }
                     return {
                         ...val

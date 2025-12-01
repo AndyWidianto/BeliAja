@@ -1,5 +1,5 @@
-import PaymentMethodModel from "../../../../models/paymentMethod";
-import type { DeleteResponse, PaymentMethod, PaymentMethodRequest, PaymentMethodResponse, PaymentMethodsResponse } from "../../../../types";
+import PaymentMethodModel from "../../../models/paymentMethod";
+import type { DeleteResponse, PaymentMethod, PaymentMethodRequest, PaymentMethodResponse, PaymentMethodsResponse } from "../../../types";
 
 interface Props {
     view: View
